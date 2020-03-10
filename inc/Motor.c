@@ -64,7 +64,16 @@ policies, either expressed or implied, of the FreeBSD Project.
 // Output: none
 void Motor_Init(void){
   // write this as part of Lab 13
-  
+    P5->DIR |= (BIT4 | BIT5);   // directions / PH are set to 0
+    P5->OUT &= ~(BIT4 | BIT5);
+
+    P2->DIR |= (BIT7 | BIT6);   // EN is set to 0
+    P2->OUT &= ~(BIT7 | BIT6);
+
+    P3->DIR |= (BIT7 | BIT6);   // drivers are turned off
+    P3->OUT &= ~(BIT7 | BIT6);
+
+    PWM_Init34(15000, 0, 0);
 }
 
 // ------------Motor_Stop------------
@@ -74,7 +83,9 @@ void Motor_Init(void){
 // Output: none
 void Motor_Stop(void){
   // write this as part of Lab 13
-  
+    P5->OUT &= ~(BIT4 | BIT5);
+    P2->OUT &= ~(BIT7 | BIT6);   // off
+    P3->OUT &= ~(BIT7 | BIT6);   // low current sleep mode
 }
 
 // ------------Motor_Forward------------
@@ -87,7 +98,11 @@ void Motor_Stop(void){
 // Assumes: Motor_Init() has been called
 void Motor_Forward(uint16_t leftDuty, uint16_t rightDuty){ 
   // write this as part of Lab 13
-  
+    P3->OUT |= (BIT7 | BIT6);
+    P5->OUT &= ~(BIT5 | BIT4);
+
+    PWM_Duty4(leftDuty);
+    PWM_Duty3(rightDuty);
 }
 
 // ------------Motor_Right------------
@@ -101,6 +116,10 @@ void Motor_Forward(uint16_t leftDuty, uint16_t rightDuty){
 void Motor_Right(uint16_t leftDuty, uint16_t rightDuty){ 
   // write this as part of Lab 13
 
+    P3->OUT |= BIT6;
+    P5->OUT &= ~BIT5;
+    PWM_Duty4(leftDuty);
+    PWM_Duty3(rightDuty);
 }
 
 // ------------Motor_Left------------
@@ -114,6 +133,10 @@ void Motor_Right(uint16_t leftDuty, uint16_t rightDuty){
 void Motor_Left(uint16_t leftDuty, uint16_t rightDuty){ 
   // write this as part of Lab 13
 
+    P3->OUT |= BIT7;
+    P5->OUT &= ~BIT4;
+    PWM_Duty4(leftDuty);
+    PWM_Duty3(rightDuty);
 }
 
 // ------------Motor_Backward------------
@@ -126,5 +149,8 @@ void Motor_Left(uint16_t leftDuty, uint16_t rightDuty){
 // Assumes: Motor_Init() has been called
 void Motor_Backward(uint16_t leftDuty, uint16_t rightDuty){ 
   // write this as part of Lab 13
-
+    P3->OUT |= (BIT7 | BIT6);
+    P5->OUT |= (BIT5 | BIT4);
+    PWM_Duty4(leftDuty);
+    PWM_Duty3(rightDuty);
 }
