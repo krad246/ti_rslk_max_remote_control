@@ -227,7 +227,12 @@ static const uint8_t ASCII[][5] = {
 void static commandwrite(uint8_t command){
 // you write this as part of Lab 11
 
+    while (EUSCI_A3->STATW & UCBUSY);
 
+    P9->OUT &= ~BIT6;   // set command
+    EUSCI_A3->TXBUF = command;
+
+    while (EUSCI_A3->STATW & UCBUSY);
 }
 void Testcommandwrite(void){
   while(1){
@@ -247,6 +252,10 @@ void Testcommandwrite(void){
 void static datawrite(uint8_t data){
 // you write this as part of Lab 11
 
+    while (EUSCI_A3->STATW & UCBUSY);
+
+    P9->OUT |= BIT6;   // set data
+    EUSCI_A3->TXBUF = data;
 
 }
 
@@ -337,7 +346,10 @@ void Nokia5110_OutChar(char data){int i;
 void Nokia5110_OutString(char *ptr){
 // you write this as part of Lab 11
 
-
+    while (*ptr) {
+        Nokia5110_OutChar(*ptr);
+        ptr++;
+    }
 }
 
 //********Nokia5110_OutUDec*****************

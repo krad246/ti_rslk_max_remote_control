@@ -75,6 +75,7 @@ uint8_t Bump_Read(void){
     uint8_t bmp_bit0 = bmp_raw_status & BIT0;
 
     uint8_t bmp_concat = (bmp_bits765 >> 2) | (bmp_bits32 >> 1) | bmp_bit0;
+
     return bmp_concat; // replace this line
 }
 

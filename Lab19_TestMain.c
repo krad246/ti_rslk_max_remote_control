@@ -54,10 +54,26 @@ policies, either expressed or implied, of the FreeBSD Project.
 #include "../inc/IRDistance.h"
 #include "../inc/Nokia5110.h"
 
+// ********OutValue**********
+// Debugging dump of a data value to virtual serial port to PC
+// data shown as 1 to 8 hexadecimal characters
+// Inputs:  response (number returned by last AP call)
+// Outputs: none
+void OutValue(char *label,uint32_t value){
+  UART0_OutString(label);
+  UART0_OutUHex(value);
+}
+
 // Motor interface, see Motor.c
+uint16_t LeftMotorPWMDuty;
+void SetLeftDuty(void) {
+    OutValue("\r\n Left Motor:", LeftMotorPWMDuty);
+}
 
-
-// line sensor interface, see Reflectance.c
+uint16_t RightMotorPWMDuty;
+void SetRightDuty(void) {
+    OutValue("\r\n Right Motor:", RightMotorPWMDuty);
+}
 
 // bump sensor interface, see Bump.c
 uint8_t BumpSensorReadVal;
@@ -68,11 +84,15 @@ void ReadBumpSensors(void) {
 
 void BLE_Init(void){
     AP_Init();
+
     AP_GetStatus();
     AP_GetVersion();
     AP_AddService(0xFFF0);
 
-    AP_AddCharacteristic(0xFFF1, 1, &BumpSensorReadVal, 0x01, 0x02, "Bump Sensors", ReadBumpSensors, NULL);
+    AP_AddCharacteristic(0xFFF1, 1, &BumpSensorReadVal, 0x01, 0x02, "Bump Sensors", ReadBumpSensors, 0);
+
+    AP_AddCharacteristic(0xFFF2,2,&LeftMotorPWMDuty,0x02,0x08,"Left Motor",0,&SetLeftDuty);
+    AP_AddCharacteristic(0xFFF3,2,&RightMotorPWMDuty,0x02,0x08,"Right Motor",0,&SetRightDuty);
 
     AP_RegisterService();
     AP_StartAdvertisement();
@@ -85,12 +105,16 @@ void main(void){
   Clock_Init48MHz();
   UART0_Init();
   LaunchPad_Init();
-  BLE_Init();
+  Bump_Init();
+  Motor_Init();
 
   EnableInterrupts();
 
+  BLE_Init();
+  UART0_OutString("\n\rBELLE Robot\n\r");
+
   while(1) {
       AP_BackgroundProcess();
-
+      Motor_Forward(LeftMotorPWMDuty, RightMotorPWMDuty);
   }
 }

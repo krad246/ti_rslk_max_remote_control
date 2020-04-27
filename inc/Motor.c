@@ -84,8 +84,8 @@ void Motor_Init(void){
 void Motor_Stop(void){
   // write this as part of Lab 13
     P5->OUT &= ~(BIT4 | BIT5);
-    P2->OUT &= ~(BIT7 | BIT6);   // off
-    P3->OUT &= ~(BIT7 | BIT6);   // low current sleep mode
+    P2->OUT &= ~0xC0;   // off
+    P3->OUT &= ~0xC0;   // low current sleep mode
 }
 
 // ------------Motor_Forward------------

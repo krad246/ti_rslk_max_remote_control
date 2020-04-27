@@ -173,11 +173,11 @@ uint8_t NPI_GATTSetDeviceNameJacki[] = {
     0x77
  };          
 uint8_t NPI_SetAdvertisementData[] = {   
-  SOF,17,0x00,    // length = 31
+  SOF,31,0x00,    // length = 31
   0x55,0x43,      // SNP Set Advertisement Data
   0x00,           // Scan Response Data
   20,0x09,        // length, type=LOCAL_NAME_COMPLETE
-  'J','a','c','k','i',
+  'S','h','a','p','e',' ','t','h','e',' ','W','o','r','l','d',' ','0','0','1',
 // connection interval range
   0x05,           // length of this data
   0x12,           // GAP_ADTYPE_SLAVE_CONN_INTERVAL_RANGE
@@ -190,8 +190,21 @@ uint8_t NPI_SetAdvertisementData[] = {
   0x77};          // FCS (calculated by AP_SendMessageResponse)
 
 uint8_t NPI_SetAdvertisementDataJacki[] = {
-// students need to write this as part of Lab 19
-  };         
+    SOF,17,0x00,    // length = 31
+    0x55,0x43,      // SNP Set Advertisement Data
+    0x00,           // Scan Response Data
+    6,0x09,        // length, type=LOCAL_NAME_COMPLETE
+    'J','a','c','k','i',
+    // connection interval range
+    0x05,           // length of this data
+    0x12,           // GAP_ADTYPE_SLAVE_CONN_INTERVAL_RANGE
+    0x50,0x00,      // DEFAULT_DESIRED_MIN_CONN_INTERVAL
+    0x20,0x03,      // DEFAULT_DESIRED_MAX_CONN_INTERVAL
+    // Tx power level
+    0x02,           // length of this data
+    0x0A,           // GAP_ADTYPE_POWER_LEVEL
+    0x00,           // 0dBm
+    0x77};          // FCS (calculated by AP_SendMessageResponse)
 
 const uint8_t NPI_StartAdvertisement[] = {   
   SOF,14,0x00,    // length = 14
